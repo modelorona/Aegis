@@ -48,7 +48,6 @@ public class EntryHolder extends RecyclerView.ViewHolder {
     private int _codeGroupSize = 6;
 
     private boolean _hidden;
-    private boolean _paused;
 
     private TotpProgressBar _progressBar;
     private View _view;
@@ -88,7 +87,7 @@ public class EntryHolder extends RecyclerView.ViewHolder {
         _refresher = new UiRefresher(new UiRefresher.Listener() {
             @Override
             public void onRefresh() {
-                if (!_hidden && !_paused) {
+                if (!_hidden) {
                     refreshCode();
                 }
             }
@@ -100,10 +99,9 @@ public class EntryHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setData(VaultEntry entry, int codeGroupSize, boolean showAccountName, boolean showProgress, boolean hidden, boolean paused, boolean dimmed) {
+    public void setData(VaultEntry entry, int codeGroupSize, boolean showAccountName, boolean showProgress, boolean hidden, boolean dimmed) {
         _entry = entry;
         _hidden = hidden;
-        _paused = paused;
 
         if (codeGroupSize <= 0)
             throw new IllegalArgumentException("Code group size cannot be zero or negative");
@@ -131,7 +129,7 @@ public class EntryHolder extends RecyclerView.ViewHolder {
 
         if (_hidden) {
             hideCode();
-        } else if (!_paused) {
+        } else {
             refreshCode();
         }
 
@@ -229,7 +227,7 @@ public class EntryHolder extends RecyclerView.ViewHolder {
     }
 
     public void refreshCode() {
-        if (!_hidden && !_paused) {
+        if (!_hidden) {
             updateCode();
         }
     }
@@ -268,14 +266,6 @@ public class EntryHolder extends RecyclerView.ViewHolder {
         hiddenText = formatCode(hiddenText);
         _profileCode.setText(hiddenText);
         _hidden = true;
-    }
-
-    public void setPaused(boolean paused) {
-        _paused = paused;
-
-        if (!_hidden && !_paused) {
-            updateCode();
-        }
     }
 
     public void dim() {

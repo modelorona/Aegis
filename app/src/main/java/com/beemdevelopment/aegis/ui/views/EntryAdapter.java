@@ -49,7 +49,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
     private boolean _isPeriodUniform = true;
     private int _uniformPeriod = -1;
     private Handler _dimHandler;
-    private boolean _pauseFocused;
 
     // keeps track of the viewholders that are currently bound
     private List<EntryHolder> _holders;
@@ -98,10 +97,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
 
     public void setIsCopyOnTapEnabled(boolean enabled) {
         _copyOnTap = enabled;
-    }
-
-    public void setPauseFocused(boolean pauseFocused) {
-        _pauseFocused = pauseFocused;
     }
 
     public VaultEntry getEntryAt(int position) {
@@ -357,10 +352,9 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
         VaultEntry entry = _shownEntries.get(position);
 
         boolean hidden = _tapToReveal && entry != _focusedEntry;
-        boolean paused = _pauseFocused && entry == _focusedEntry;
         boolean dimmed = (_highlightEntry || _tempHighlightEntry) && _focusedEntry != null && _focusedEntry != entry;
         boolean showProgress = entry.getInfo() instanceof TotpInfo && ((TotpInfo) entry.getInfo()).getPeriod() != getMostFrequentPeriod();
-        holder.setData(entry, _codeGroupSize, _showAccountName, showProgress, hidden, paused, dimmed);
+        holder.setData(entry, _codeGroupSize, _showAccountName, showProgress, hidden, dimmed);
         holder.setFocused(_selectedEntries.contains(entry));
         holder.loadIcon(_view);
 
@@ -528,18 +522,12 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
                 if (_tapToReveal) {
                     holder.hideCode();
                 }
-                if (_pauseFocused) {
-                    holder.setPaused(false);
-                }
             } else {
                 if (_highlightEntry || _tempHighlightEntry) {
                     holder.highlight();
                 }
                 if (_tapToReveal) {
                     holder.revealCode();
-                }
-                if (_pauseFocused) {
-                    holder.setPaused(true);
                 }
             }
         }
@@ -554,9 +542,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
             }
             if (_tapToReveal) {
                 holder.hideCode();
-            }
-            if (_pauseFocused) {
-                holder.setPaused(false);
             }
         }
 
