@@ -102,6 +102,7 @@ public class EditEntryActivity extends AegisActivity {
     private TextInputLayout _textDigitsLayout;
     private TextInputEditText _textSecret;
     private TextInputEditText _textUsageCount;
+    private TextInputEditText _textNote;
 
     private AutoCompleteTextView _dropdownType;
     private AutoCompleteTextView _dropdownAlgo;
@@ -153,6 +154,7 @@ public class EditEntryActivity extends AegisActivity {
         _textDigitsLayout = findViewById(R.id.text_digits_layout);
         _textSecret = findViewById(R.id.text_secret);
         _textUsageCount = findViewById(R.id.text_usage_count);
+        _textNote = findViewById(R.id.text_note);
         _dropdownType = findViewById(R.id.dropdown_type);
         DropdownHelper.fillDropdown(this, _dropdownType, R.array.otp_types_array);
         _dropdownAlgoLayout = findViewById(R.id.dropdown_algo_layout);
@@ -187,12 +189,12 @@ public class EditEntryActivity extends AegisActivity {
         if (_origEntry.hasIcon()) {
             IconViewHelper.setLayerType(_iconView, _origEntry.getIconType());
             Glide.with(this)
-                .asDrawable()
-                .load(_origEntry)
-                .set(IconLoader.ICON_TYPE, _origEntry.getIconType())
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(false)
-                .into(_iconView);
+                    .asDrawable()
+                    .load(_origEntry)
+                    .set(IconLoader.ICON_TYPE, _origEntry.getIconType())
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(false)
+                    .into(_iconView);
             _hasCustomIcon = true;
         } else {
             TextDrawable drawable = TextDrawableHelper.generate(_origEntry.getIssuer(), _origEntry.getName(), _iconView);
@@ -201,6 +203,7 @@ public class EditEntryActivity extends AegisActivity {
 
         _textName.setText(_origEntry.getName());
         _textIssuer.setText(_origEntry.getIssuer());
+        _textNote.setText(_origEntry.getNote());
 
         OtpInfo info = _origEntry.getInfo();
         if (info instanceof TotpInfo) {
@@ -675,6 +678,7 @@ public class EditEntryActivity extends AegisActivity {
         entry.setInfo(info);
         entry.setIssuer(_textIssuer.getText().toString());
         entry.setName(_textName.getText().toString());
+        entry.setNote(_textNote.getText().toString());
 
         int groupPos = _dropdownGroupList.indexOf(_dropdownGroup.getText().toString());
         if (groupPos != 0) {
